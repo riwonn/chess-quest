@@ -91,17 +91,15 @@ export default function Result({ quest, onRetry }: ResultProps) {
   };
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col items-center justify-center relative overflow-hidden pt-12 pb-32">
+    <div className="min-h-screen bg-bg flex flex-col items-center justify-center px-6 py-16 overflow-hidden">
 
-      {/* ── Header ────────────────────────────────────────────── */}
-      <div className="absolute top-0 left-0 right-0 flex flex-col items-center justify-end px-2 py-8 h-[160px]">
-        <p className="font-corbert text-[28px] text-pink leading-none tracking-tight">
-          Seoul Chess Club Quest
-        </p>
-      </div>
+      {/* ── Club label ────────────────────────────────────────── */}
+      <p className="font-corbert text-[22px] text-pink mb-5 tracking-tight">
+        Seoul Chess Club Quest
+      </p>
 
       {/* ── Main content ──────────────────────────────────────── */}
-      <div className="w-full flex flex-col items-center gap-8 mt-4 animate-result-in">
+      <div className="w-full flex flex-col items-center gap-6 animate-result-in">
 
         {/* Quest title */}
         <h1 className="font-corbert text-[44px] text-white leading-tight tracking-tight text-center px-4">
@@ -112,8 +110,8 @@ export default function Result({ quest, onRetry }: ResultProps) {
         <FlipCard quest={quest} />
       </div>
 
-      {/* ── Buttons — fixed at bottom ─────────────────────────── */}
-      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 z-10">
+      {/* ── Buttons — flows below card ────────────────────────── */}
+      <div className="flex items-center justify-center gap-4 mt-10">
 
         {/* Retry */}
         <button
