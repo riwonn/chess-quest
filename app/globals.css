@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Corbert ExtraBold Wide (Figma headline font) ───────────── */
+@font-face {
+  font-family: "Corbert ExtraBold Wide";
+  src: url("https://db.onlinewebfonts.com/t/54542e7cc5c54b2602441c311580cadb.eot");
+  src: url("https://db.onlinewebfonts.com/t/54542e7cc5c54b2602441c311580cadb.eot?#iefix") format("embedded-opentype"),
+       url("https://db.onlinewebfonts.com/t/54542e7cc5c54b2602441c311580cadb.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/54542e7cc5c54b2602441c311580cadb.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/54542e7cc5c54b2602441c311580cadb.ttf") format("truetype"),
+       url("https://db.onlinewebfonts.com/t/54542e7cc5c54b2602441c311580cadb.svg#Corbert ExtraBold Wide") format("svg");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Custom properties ─────────────────────────────────────── */
+:root {
+  --font-cormorant: "Cormorant Garamond", Georgia, serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-corbert: "Corbert ExtraBold Wide", "Impact", sans-serif;
+}
+
+/* ─── Corbert utility class ──────────────────────────────────── */
+.font-corbert {
+  font-family: var(--font-corbert);
+  font-weight: 800;
+}
+
+/* ─── Base resets ────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #1e2430;
+  color: #ffffff;
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Grain overlay (applied via pseudo-element on body) ─────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  /* subtle film grain using SVG turbulence */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ─── Card inner border pattern ──────────────────────────────── */
+.card-inner-border {
+  position: absolute;
+  inset: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+
+/* ─── Card corner ornament (chess knight glyph) ─────────────── */
+.card-corner {
+  position: absolute;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: var(--font-cormorant);
+  letter-spacing: 0.05em;
+}
+.card-corner-tl { top: 16px; left: 16px; }
+.card-corner-br { bottom: 16px; right: 16px; transform: rotate(180deg); }
+
+/* ─── Utility: no select ─────────────────────────────────────── */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ─── Scrollbar (minimal) ────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
