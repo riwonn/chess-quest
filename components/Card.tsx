@@ -43,13 +43,12 @@ const BORDER_COLOR: Record<CardVariant, string> = {
 };
 
 // ── Mandala images per variant ────────────────────────────────
-// Add more as /public/images/mandala-N.png files are provided
-const MANDALA: Partial<Record<CardVariant, string>> = {
+const MANDALA: Record<CardVariant, string> = {
   "1": "/images/mandala-1.png",
-  // "2": "/images/mandala-2.png",
-  // "3": "/images/mandala-3.png",
-  // "4": "/images/mandala-4.png",
-  // "5": "/images/mandala-5.png",
+  "2": "/images/mandala-2.png",
+  "3": "/images/mandala-3.png",
+  "4": "/images/mandala-4.png",
+  "5": "/images/mandala-5.png",
 };
 
 // ── Knight SVG (recolored per variant) ───────────────────────
@@ -148,7 +147,7 @@ export default function Card({
   const bg      = BG[variant];
   const text    = TEXT[variant];
   const border  = BORDER_COLOR[variant];
-  const mandala = MANDALA[variant];
+  const mandala: string = MANDALA[variant];
 
   const W = 280;
   const H = 420;
@@ -177,19 +176,14 @@ export default function Card({
 
           {/* Mandala illustration — center */}
           <div className="absolute inset-0 flex items-center justify-center">
-            {mandala ? (
-              <Image
-                src={mandala}
-                alt="card illustration"
-                width={180}
-                height={180}
-                style={{ objectFit: "contain" }}
-                priority
-              />
-            ) : (
-              /* Placeholder if mandala image not yet provided */
-              <KnightIcon color={text.primary} size={80} />
-            )}
+            <Image
+              src={mandala}
+              alt="card illustration"
+              width={180}
+              height={180}
+              style={{ objectFit: "contain" }}
+              priority
+            />
           </div>
         </>
       )}

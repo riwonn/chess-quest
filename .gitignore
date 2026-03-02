@@ -13,6 +13,10 @@ out/
 # OS
 .DS_Store
 
+# Asset source files (kept in public/ instead)
+image_card_*.png
+logo.svg
+
 # Editor
 .vscode/
 .idea/
