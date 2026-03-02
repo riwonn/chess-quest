@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import confetti from "canvas-confetti";
 import Card from "./Card";
 import type { Quest } from "@/data/quests";
 import { getVariant } from "@/data/quests";
@@ -17,9 +18,29 @@ function FlipCard({ quest }: { quest: Quest }) {
   const variant = getVariant(quest.id);
 
   // Auto-flip after entrance animation settles (~700ms)
+  // Fire confetti when the back face is revealed (~700ms + flip duration 850ms)
   useEffect(() => {
-    const t = setTimeout(() => setFlipped(true), 700);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setFlipped(true), 700);
+    const t2 = setTimeout(() => {
+      // Two bursts from left and right edges
+      confetti({
+        particleCount: 60,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.6 },
+        colors: ["#fcacf3", "#fe9ff7", "#ffffff", "#b08d57", "#f5f1ea"],
+        scalar: 0.9,
+      });
+      confetti({
+        particleCount: 60,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.6 },
+        colors: ["#fcacf3", "#fe9ff7", "#ffffff", "#b08d57", "#f5f1ea"],
+        scalar: 0.9,
+      });
+    }, 1600); // flip starts at 700ms, lasts 850ms → burst at 1550ms
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   return (
