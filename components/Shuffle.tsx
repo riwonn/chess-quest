@@ -71,7 +71,7 @@ export default function Shuffle({ onComplete, lang, onLangToggle }: ShuffleProps
       <div
         className="absolute"
         style={{
-          top: "50%",
+          top: "60%",
           left: "50%",
           marginTop: -H / 2,
           marginLeft: -W / 2,
