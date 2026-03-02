@@ -33,13 +33,13 @@ const TEXT: Record<CardVariant, { primary: string; muted: string; logo: string }
   "5": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
 };
 
-// ── Border pattern colors ─────────────────────────────────────
+// ── Border separator color (used on card back footer) ─────────
 const BORDER_COLOR: Record<CardVariant, string> = {
-  "1": "rgba(255,255,255,0.30)",
-  "2": "rgba(42,13,41,0.25)",
-  "3": "rgba(122,92,46,0.30)",
-  "4": "rgba(255,255,255,0.30)",
-  "5": "rgba(255,255,255,0.30)",
+  "1": "rgba(255,255,255,0.18)",
+  "2": "rgba(42,13,41,0.15)",
+  "3": "rgba(122,92,46,0.20)",
+  "4": "rgba(255,255,255,0.18)",
+  "5": "rgba(255,255,255,0.18)",
 };
 
 // ── Mandala images per variant ────────────────────────────────
@@ -70,70 +70,7 @@ function KnightIcon({ color, size = 22 }: { color: string; size?: number }) {
   );
 }
 
-// ── XO border pattern (SVG) ───────────────────────────────────
-// Replicates the Figma card border: alternating × and + symbols
-function BorderPattern({ color, cardW = 280, cardH = 420 }: {
-  color: string;
-  cardW?: number;
-  cardH?: number;
-}) {
-  const PAD   = 12;   // inset from card edge
-  const STEP  = 18;   // spacing between symbols
-  const SZ    = 4.5;  // half-size of each symbol arm
-
-  const symbols: React.ReactNode[] = [];
-  let key = 0;
-
-  // Helper: draw × (diagonal cross)
-  const X = (cx: number, cy: number) => (
-    <g key={key++}>
-      <line x1={cx - SZ} y1={cy - SZ} x2={cx + SZ} y2={cy + SZ} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
-      <line x1={cx + SZ} y1={cy - SZ} x2={cx - SZ} y2={cy + SZ} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
-    </g>
-  );
-
-  // Helper: draw + (orthogonal cross)
-  const Plus = (cx: number, cy: number) => (
-    <g key={key++}>
-      <line x1={cx - SZ} y1={cy} x2={cx + SZ} y2={cy} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
-      <line x1={cx} y1={cy - SZ} x2={cx} y2={cy + SZ} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
-    </g>
-  );
-
-  const drawSymbol = (cx: number, cy: number, idx: number) =>
-    idx % 2 === 0 ? X(cx, cy) : Plus(cx, cy);
-
-  // Top edge
-  let idx = 0;
-  for (let x = PAD; x <= cardW - PAD; x += STEP) {
-    symbols.push(drawSymbol(x, PAD, idx++));
-  }
-  // Bottom edge
-  idx = 0;
-  for (let x = PAD; x <= cardW - PAD; x += STEP) {
-    symbols.push(drawSymbol(x, cardH - PAD, idx++));
-  }
-  // Left edge (skip corners already drawn)
-  idx = 1;
-  for (let y = PAD + STEP; y <= cardH - PAD - STEP; y += STEP) {
-    symbols.push(drawSymbol(PAD, y, idx++));
-  }
-  // Right edge
-  idx = 1;
-  for (let y = PAD + STEP; y <= cardH - PAD - STEP; y += STEP) {
-    symbols.push(drawSymbol(cardW - PAD, y, idx++));
-  }
-
-  return (
-    <svg
-      className="absolute inset-0 pointer-events-none"
-      width={cardW}
-      height={cardH}
-    >
-      {symbols}
-    </svg>
-  );
-}
+// BorderPattern removed — replaced by image-based borders
 
 // ── Main Card component ───────────────────────────────────────
 export default function Card({
@@ -166,16 +103,23 @@ export default function Card({
       {/* ── FRONT ─────────────────────────────────────────────── */}
       {page === "Front" && (
         <>
-          {/* x/+ border pattern */}
-          <BorderPattern color={border} cardW={W} cardH={H} />
+          {/* Border image — stretched to fill card exactly */}
+          <Image
+            src={`/images/border-${variant}.png`}
+            alt=""
+            fill
+            style={{ objectFit: "fill" }}
+            className="absolute inset-0 pointer-events-none"
+            priority
+          />
 
           {/* Knight icon — top center */}
-          <div className="absolute top-7 left-0 right-0 flex justify-center">
+          <div className="absolute top-7 left-0 right-0 flex justify-center" style={{ zIndex: 1 }}>
             <KnightIcon color={text.primary} size={26} />
           </div>
 
           {/* Mandala illustration — center */}
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center" style={{ zIndex: 1 }}>
             <Image
               src={mandala}
               alt="card illustration"

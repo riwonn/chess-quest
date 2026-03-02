@@ -15,6 +15,7 @@ out/
 
 # Asset source files (kept in public/ instead)
 image_card_*.png
+img_boarder_*.png
 logo.svg
 
 # Editor
