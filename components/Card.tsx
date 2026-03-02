@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 export type CardVariant = "1" | "2" | "3" | "4" | "5";
 type CardPage = "Front" | "Back";
@@ -9,39 +10,133 @@ interface CardProps {
   className?: string;
   variant?: CardVariant;
   page?: CardPage;
-  // Back-side content
   title?: string;
   mission?: string;
   starter?: string;
 }
 
-// ── Background colors per variant ────────────────────────────
-const bgByVariant: Record<CardVariant, string> = {
+// ── Background colors ─────────────────────────────────────────
+const BG: Record<CardVariant, string> = {
   "1": "#6b0440",
-  "2": "#fcacf3",
-  "3": "#2f6f6d",
-  "4": "#f5f1ea",
+  "2": "#d4a8d4",
+  "3": "#f5f1ea",
+  "4": "#2f6f6d",
   "5": "#b08d57",
 };
 
-// ── Border / pattern colors per variant ──────────────────────
-const borderByVariant: Record<CardVariant, { outer: string; inner: string }> = {
-  "1": { outer: "rgba(252,172,243,0.30)", inner: "rgba(252,172,243,0.20)" },
-  "2": { outer: "rgba(42,13,41,0.20)",   inner: "rgba(42,13,41,0.12)" },
-  "3": { outer: "rgba(252,172,243,0.30)", inner: "rgba(252,172,243,0.20)" },
-  "4": { outer: "rgba(200,150,100,0.30)", inner: "rgba(200,150,100,0.20)" },
-  "5": { outer: "rgba(252,172,243,0.30)", inner: "rgba(252,172,243,0.20)" },
+// ── Text colors (primary / muted) ─────────────────────────────
+const TEXT: Record<CardVariant, { primary: string; muted: string; logo: string }> = {
+  "1": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
+  "2": { primary: "#2a0d29",  muted: "rgba(42,13,41,0.65)",   logo: "#2a0d29" },
+  "3": { primary: "#7a5c2e",  muted: "rgba(122,92,46,0.75)",  logo: "#7a5c2e" },
+  "4": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
+  "5": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
 };
 
-// ── Text color per variant ────────────────────────────────────
-const textByVariant: Record<CardVariant, { primary: string; muted: string }> = {
-  "1": { primary: "#ffffff",       muted: "rgba(255,255,255,0.6)" },
-  "2": { primary: "#2a0d29",       muted: "rgba(42,13,41,0.55)" },
-  "3": { primary: "#ffffff",       muted: "rgba(255,255,255,0.6)" },
-  "4": { primary: "#2a0d29",       muted: "rgba(42,13,41,0.55)" },
-  "5": { primary: "#ffffff",       muted: "rgba(255,255,255,0.6)" },
+// ── Border pattern colors ─────────────────────────────────────
+const BORDER_COLOR: Record<CardVariant, string> = {
+  "1": "rgba(255,255,255,0.30)",
+  "2": "rgba(42,13,41,0.25)",
+  "3": "rgba(122,92,46,0.30)",
+  "4": "rgba(255,255,255,0.30)",
+  "5": "rgba(255,255,255,0.30)",
 };
 
+// ── Mandala images per variant ────────────────────────────────
+// Add more as /public/images/mandala-N.png files are provided
+const MANDALA: Partial<Record<CardVariant, string>> = {
+  "1": "/images/mandala-1.png",
+  // "2": "/images/mandala-2.png",
+  // "3": "/images/mandala-3.png",
+  // "4": "/images/mandala-4.png",
+  // "5": "/images/mandala-5.png",
+};
+
+// ── Knight SVG (recolored per variant) ───────────────────────
+function KnightIcon({ color, size = 22 }: { color: string; size?: number }) {
+  const scale = size / 31;
+  return (
+    <svg
+      width={27 * scale}
+      height={31 * scale}
+      viewBox="0 0 27 31"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0 22.1691L6.1579 12.7992L3.47163 14.1097L0 11.9461L0 8.88773L8.21001 2.46099H10.0415V0L17.6615 0L21.864 4.67574L27 24.3748L22.7216 25.8777L27 27.3193V31H0L0 27.3193L5.49926 25.8777L0 22.1691Z"
+        fill={color}
+      />
+    </svg>
+  );
+}
+
+// ── XO border pattern (SVG) ───────────────────────────────────
+// Replicates the Figma card border: alternating × and + symbols
+function BorderPattern({ color, cardW = 280, cardH = 420 }: {
+  color: string;
+  cardW?: number;
+  cardH?: number;
+}) {
+  const PAD   = 12;   // inset from card edge
+  const STEP  = 18;   // spacing between symbols
+  const SZ    = 4.5;  // half-size of each symbol arm
+
+  const symbols: React.ReactNode[] = [];
+  let key = 0;
+
+  // Helper: draw × (diagonal cross)
+  const X = (cx: number, cy: number) => (
+    <g key={key++}>
+      <line x1={cx - SZ} y1={cy - SZ} x2={cx + SZ} y2={cy + SZ} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+      <line x1={cx + SZ} y1={cy - SZ} x2={cx - SZ} y2={cy + SZ} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+    </g>
+  );
+
+  // Helper: draw + (orthogonal cross)
+  const Plus = (cx: number, cy: number) => (
+    <g key={key++}>
+      <line x1={cx - SZ} y1={cy} x2={cx + SZ} y2={cy} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+      <line x1={cx} y1={cy - SZ} x2={cx} y2={cy + SZ} stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+    </g>
+  );
+
+  const drawSymbol = (cx: number, cy: number, idx: number) =>
+    idx % 2 === 0 ? X(cx, cy) : Plus(cx, cy);
+
+  // Top edge
+  let idx = 0;
+  for (let x = PAD; x <= cardW - PAD; x += STEP) {
+    symbols.push(drawSymbol(x, PAD, idx++));
+  }
+  // Bottom edge
+  idx = 0;
+  for (let x = PAD; x <= cardW - PAD; x += STEP) {
+    symbols.push(drawSymbol(x, cardH - PAD, idx++));
+  }
+  // Left edge (skip corners already drawn)
+  idx = 1;
+  for (let y = PAD + STEP; y <= cardH - PAD - STEP; y += STEP) {
+    symbols.push(drawSymbol(PAD, y, idx++));
+  }
+  // Right edge
+  idx = 1;
+  for (let y = PAD + STEP; y <= cardH - PAD - STEP; y += STEP) {
+    symbols.push(drawSymbol(cardW - PAD, y, idx++));
+  }
+
+  return (
+    <svg
+      className="absolute inset-0 pointer-events-none"
+      width={cardW}
+      height={cardH}
+    >
+      {symbols}
+    </svg>
+  );
+}
+
+// ── Main Card component ───────────────────────────────────────
 export default function Card({
   className,
   variant = "1",
@@ -50,134 +145,99 @@ export default function Card({
   mission,
   starter,
 }: CardProps) {
-  const bg      = bgByVariant[variant];
-  const border  = borderByVariant[variant];
-  const text    = textByVariant[variant];
+  const bg      = BG[variant];
+  const text    = TEXT[variant];
+  const border  = BORDER_COLOR[variant];
+  const mandala = MANDALA[variant];
+
+  const W = 280;
+  const H = 420;
 
   return (
     <div
-      className={className ?? "h-[420px] w-[280px] rounded-[30px] overflow-hidden relative"}
-      style={{ backgroundColor: bg }}
+      className={className ?? "relative overflow-hidden"}
+      style={{
+        width: W,
+        height: H,
+        borderRadius: 28,
+        backgroundColor: bg,
+        flexShrink: 0,
+      }}
     >
-      {/* ── FRONT ───────────────────────────────────────────── */}
+      {/* ── FRONT ─────────────────────────────────────────────── */}
       {page === "Front" && (
         <>
-          {/* Circle-pattern SVG overlay */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ opacity: 0.4 }}
-          >
-            <defs>
-              <pattern
-                id={`dots-${variant}`}
-                x="20" y="20"
-                width="30" height="30"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle
-                  cx="15" cy="15" r="8"
-                  fill="none"
-                  stroke={border.outer}
-                  strokeWidth="2"
-                />
-              </pattern>
-            </defs>
-            {/* Outer decorative rect */}
-            <rect
-              x="10" y="10" width="260" height="400" rx="18"
-              fill="none"
-              stroke={border.outer}
-              strokeWidth="2"
-            />
-            {/* Pattern fill */}
-            <rect
-              x="10" y="10" width="260" height="400" rx="18"
-              fill={`url(#dots-${variant})`}
-            />
-          </svg>
+          {/* x/+ border pattern */}
+          <BorderPattern color={border} cardW={W} cardH={H} />
 
-          {/* Inner border */}
-          <div
-            className="absolute rounded-[18px] pointer-events-none"
-            style={{ inset: "10px", border: `1px solid ${border.inner}` }}
-          />
+          {/* Knight icon — top center */}
+          <div className="absolute top-7 left-0 right-0 flex justify-center">
+            <KnightIcon color={text.primary} size={26} />
+          </div>
 
-          {/* Center monogram */}
+          {/* Mandala illustration — center */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className="font-serif text-5xl font-light"
-              style={{ color: border.outer, opacity: 0.6 }}
-            >
-              ♟
-            </span>
+            {mandala ? (
+              <Image
+                src={mandala}
+                alt="card illustration"
+                width={180}
+                height={180}
+                style={{ objectFit: "contain" }}
+                priority
+              />
+            ) : (
+              /* Placeholder if mandala image not yet provided */
+              <KnightIcon color={text.primary} size={80} />
+            )}
           </div>
         </>
       )}
 
-      {/* ── BACK ────────────────────────────────────────────── */}
+      {/* ── BACK ──────────────────────────────────────────────── */}
       {page === "Back" && (
-        <div
-          className="h-full flex flex-col px-7 pt-7 pb-6"
-          style={{ color: text.primary }}
-        >
-          {/* Club label */}
-          <p
-            className="font-sans text-[11px] tracking-[0.22em] uppercase mb-5"
-            style={{ color: text.muted }}
-          >
-            Seoul Chess Club Quest
-          </p>
+        <div className="h-full flex flex-col">
+          {/* Upper empty area */}
+          <div className="flex-1" />
 
-          {/* Quest title */}
-          <h3
-            className="font-serif text-[22px] font-bold leading-snug mb-4"
-            style={{ color: text.primary }}
-          >
-            {title ?? "Quest Title"}
-          </h3>
-
-          {/* Thin divider */}
-          <div
-            className="w-8 h-px mb-4"
-            style={{ backgroundColor: text.muted }}
-          />
-
-          {/* Mission text */}
-          <p
-            className="font-sans text-[13px] leading-relaxed flex-1"
-            style={{ color: text.muted }}
-          >
-            {mission ?? ""}
-          </p>
-
-          {/* Conversation starter */}
-          {starter && (
-            <div
-              className="mt-4 pt-4"
-              style={{ borderTop: `1px solid ${border.inner}` }}
+          {/* Text block — bottom portion */}
+          <div className="px-6 pb-5">
+            <h3
+              className="font-corbert text-[26px] leading-tight mb-1"
+              style={{ color: text.primary }}
             >
+              {title ?? "Quest Title"}
+            </h3>
+            <p
+              className="font-sans text-[15px] leading-snug"
+              style={{ color: text.muted }}
+            >
+              {mission ?? "Quest Description"}
+            </p>
+
+            {/* Starter (if provided) */}
+            {starter && (
               <p
-                className="font-sans text-[9px] tracking-[0.2em] uppercase mb-1.5"
+                className="font-serif text-[13px] italic mt-3 leading-snug"
                 style={{ color: text.muted }}
-              >
-                Try saying
-              </p>
-              <p
-                className="font-serif text-[13px] italic leading-snug"
-                style={{ color: text.primary }}
               >
                 {starter}
               </p>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Footer */}
+          {/* Footer — Seoul Chess Club + logo */}
           <div
-            className="mt-4 flex items-center justify-center gap-1.5"
-            style={{ color: text.muted }}
+            className="px-6 py-4 flex items-center gap-2"
+            style={{ borderTop: `1px solid ${border}` }}
           >
-            <span className="font-serif text-[11px]">Seoul Chess Club</span>
-            <span className="text-[13px]">♟</span>
+            <span
+              className="font-serif text-[13px]"
+              style={{ color: text.muted }}
+            >
+              Seoul Chess Club
+            </span>
+            <KnightIcon color={text.logo} size={18} />
           </div>
         </div>
       )}
