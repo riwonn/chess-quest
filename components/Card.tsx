@@ -17,11 +17,11 @@ interface CardProps {
 
 // ── Background colors ─────────────────────────────────────────
 const BG: Record<CardVariant, string> = {
-  "1": "#6b0440",
-  "2": "#d4a8d4",
-  "3": "#f5f1ea",
-  "4": "#2f6f6d",
-  "5": "#b08d57",
+  "1": "#6B0440",
+  "2": "#FCACF3",
+  "3": "#F5F1EA",
+  "4": "#2F6F6D",
+  "5": "#B08D57",
 };
 
 // ── Text colors (primary / muted) ─────────────────────────────
