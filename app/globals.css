@@ -87,3 +87,40 @@ body::before {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* ─── Shuffle keyframes ──────────────────────────────────────── */
+@keyframes shuffle-a {
+  0%   { transform: rotate(0deg)   translate(0px,    0px); }
+  25%  { transform: rotate(-30deg) translate(-220px, -80px) scale(1.05); }
+  55%  { transform: rotate(-22deg) translate(-180px,  40px); }
+  80%  { transform: rotate(-10deg) translate(-60px,  -20px); }
+  100% { transform: rotate(0deg)   translate(0px,    0px); }
+}
+@keyframes shuffle-b {
+  0%   { transform: rotate(0deg)  translate(0px,   0px); }
+  20%  { transform: rotate(28deg) translate(200px, -60px) scale(1.05); }
+  50%  { transform: rotate(20deg) translate(160px,  50px); }
+  80%  { transform: rotate(8deg)  translate(50px,  -10px); }
+  100% { transform: rotate(0deg)  translate(0px,   0px); }
+}
+@keyframes shuffle-c {
+  0%   { transform: rotate(0deg)   translate(0px,    0px); }
+  30%  { transform: rotate(-12deg) translate(-30px, -160px) scale(1.08); }
+  60%  { transform: rotate(10deg)  translate(30px,  -130px); }
+  85%  { transform: rotate(-5deg)  translate(-10px,  -50px); }
+  100% { transform: rotate(0deg)   translate(0px,    0px); }
+}
+@keyframes shuffle-d {
+  0%   { transform: rotate(0deg)   translate(0px,   0px); }
+  25%  { transform: rotate(-25deg) translate(-160px, 100px) scale(1.04); }
+  55%  { transform: rotate(-18deg) translate(-100px,  80px); }
+  80%  { transform: rotate(-8deg)  translate(-40px,   20px); }
+  100% { transform: rotate(0deg)   translate(0px,   0px); }
+}
+@keyframes shuffle-e {
+  0%   { transform: rotate(0deg)  translate(0px,  0px); }
+  20%  { transform: rotate(22deg) translate(140px, 110px) scale(1.04); }
+  50%  { transform: rotate(16deg) translate(90px,   90px); }
+  80%  { transform: rotate(6deg)  translate(30px,   30px); }
+  100% { transform: rotate(0deg)  translate(0px,  0px); }
+}

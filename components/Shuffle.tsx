@@ -8,72 +8,65 @@ interface ShuffleProps {
   onComplete: () => void;
 }
 
-// 5 cards with their Figma positions and animation classes
-const CARDS: { variant: CardVariant; animClass: string; style: React.CSSProperties }[] = [
-  {
-    variant: "1",
-    animClass: "animate-shuffle1",
-    style: { left: "207px", top: "308px", transform: "rotate(-15deg)" },
-  },
-  {
-    variant: "4",
-    animClass: "animate-shuffle2",
-    style: { left: "691px", top: "346px", transform: "rotate(15deg)" },
-  },
-  {
-    variant: "5",
-    animClass: "animate-shuffle3",
-    style: { left: "905px", top: "301px", transform: "rotate(-6.88deg)" },
-  },
-  {
-    variant: "3",
-    animClass: "animate-shuffle1",
-    style: { left: "413px", top: "443px", transform: "rotate(-6.88deg)" },
-  },
-  {
-    variant: "2",
-    animClass: "animate-shuffle2",
-    style: { left: "551px", top: "321px" },
-  },
+const W = 280;
+const H = 420;
+
+const CARDS: { variant: CardVariant; anim: string; delay: string; z: number }[] = [
+  { variant: "3", anim: "shuffle-a", delay: "0ms",   z: 11 },
+  { variant: "5", anim: "shuffle-b", delay: "60ms",  z: 12 },
+  { variant: "1", anim: "shuffle-c", delay: "120ms", z: 13 },
+  { variant: "4", anim: "shuffle-d", delay: "180ms", z: 14 },
+  { variant: "2", anim: "shuffle-e", delay: "240ms", z: 15 },
 ];
 
 export default function Shuffle({ onComplete }: ShuffleProps) {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    // Start fade-out after shuffle plays
-    const t1 = setTimeout(() => setFading(true), 1200);
-    // Notify parent to transition to Result
-    const t2 = setTimeout(onComplete, 1700);
+    const t1 = setTimeout(() => setFading(true), 1800);
+    const t2 = setTimeout(onComplete, 2300);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [onComplete]);
 
   return (
     <div
-      className="min-h-screen bg-bg flex flex-col items-center relative overflow-hidden pt-12 pb-24 transition-opacity duration-500"
+      className="min-h-screen bg-bg flex flex-col items-center relative overflow-hidden transition-opacity duration-500"
       style={{ opacity: fading ? 0 : 1 }}
     >
-      {/* ── Header ────────────────────────────────────────────── */}
+      {/* Header */}
       <div className="absolute top-0 left-0 right-0 flex flex-col items-center justify-end px-2 py-8 h-[160px]">
         <p className="font-corbert text-[28px] text-pink leading-none tracking-tight">
           Seoul Chess Club Quest
         </p>
       </div>
 
-      {/* ── Status text ───────────────────────────────────────── */}
-      <div className="absolute top-[190px] left-1/2 -translate-x-1/2 z-20">
+      {/* Status text */}
+      <div className="absolute top-[190px] left-1/2 -translate-x-1/2 z-20 whitespace-nowrap">
         <p className="font-sans text-[22px] text-white/80 text-center tracking-wide">
           Shuffling the cards…
         </p>
       </div>
 
-      {/* ── Animated cards ────────────────────────────────────── */}
-      <div className="relative w-full h-screen">
+      {/* Card stack — centered */}
+      <div
+        className="absolute"
+        style={{
+          top: "50%",
+          left: "50%",
+          marginTop: -H / 2,
+          marginLeft: -W / 2,
+          width: W,
+          height: H,
+        }}
+      >
         {CARDS.map((card, i) => (
           <div
             key={i}
-            className={`absolute ${card.animClass}`}
-            style={{ width: "280px", height: "420px", ...card.style }}
+            className="absolute inset-0"
+            style={{
+              zIndex: card.z,
+              animation: `${card.anim} 1.6s cubic-bezier(0.34,1.2,0.64,1) ${card.delay} forwards`,
+            }}
           >
             <Card variant={card.variant} page="Front" />
           </div>
@@ -82,7 +75,7 @@ export default function Shuffle({ onComplete }: ShuffleProps) {
 
       {/* Bottom gradient */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[200px] pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-[200px] pointer-events-none z-0"
         style={{ background: "linear-gradient(to bottom, transparent, #1e2430)" }}
       />
     </div>

@@ -37,6 +37,7 @@ function FlipCard({ quest }: { quest: Quest }) {
           width: "280px",
           height: "420px",
           transformStyle: "preserve-3d",
+          WebkitTransformStyle: "preserve-3d",
           transition: "transform 0.85s cubic-bezier(0.4, 0, 0.2, 1)",
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
@@ -48,6 +49,7 @@ function FlipCard({ quest }: { quest: Quest }) {
             inset: 0,
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(0deg)",
           }}
         >
           <Card variant={variant} page="Front" />
@@ -70,6 +72,7 @@ function FlipCard({ quest }: { quest: Quest }) {
             title={quest.enTitle}
             mission={quest.enMission}
             starter={`"${quest.enStarter}"`}
+            iconSeed={quest.id}
           />
         </div>
       </div>
@@ -91,34 +94,38 @@ export default function Result({ quest, onRetry }: ResultProps) {
   };
 
   return (
-    <div className="min-h-screen bg-bg flex flex-col items-center justify-center px-6 py-16 overflow-hidden">
+    <div className="min-h-screen bg-bg relative overflow-hidden">
 
-      {/* ── Club label ────────────────────────────────────────── */}
-      <p className="font-corbert text-[22px] text-pink mb-5 tracking-tight">
-        Seoul Chess Club Quest
-      </p>
+      {/* ── Header — matches Landing / Shuffle ────────────────── */}
+      <div className="absolute top-0 left-0 right-0 h-[160px] flex items-end justify-center px-2 py-8 z-10">
+        <p className="font-corbert text-[28px] text-pink leading-none tracking-tight">
+          Seoul Chess Club Quest
+        </p>
+      </div>
 
-      {/* ── Main content ──────────────────────────────────────── */}
-      <div className="w-full flex flex-col items-center gap-6 animate-result-in">
+      {/* ── Center content — between header and buttons ───────── */}
+      <div
+        className="absolute left-0 right-0 flex flex-col items-center justify-center gap-5 px-4 animate-result-in"
+        style={{ top: "160px", bottom: "260px" }}
+      >
+        {/* Subtitle */}
+        <p className="font-sans text-[20px] text-white leading-relaxed tracking-tight text-center">
+          Complete this quest and earn a free ticket to our next meetup!
+        </p>
 
-        {/* Quest title */}
-        <h1 className="font-corbert text-[44px] text-white leading-tight tracking-tight text-center px-4">
-          {quest.enTitle}
-        </h1>
-
-        {/* Flip card — front first, then auto-flips to back */}
+        {/* Flip card */}
         <FlipCard quest={quest} />
       </div>
 
-      {/* ── Buttons — flows below card ────────────────────────── */}
-      <div className="flex items-center justify-center gap-4 mt-10">
+      {/* ── Buttons — fixed bottom, matches Landing ───────────── */}
+      <div className="absolute bottom-0 left-0 right-0 h-[260px] flex items-center justify-center gap-4 z-30">
 
         {/* Retry */}
         <button
           onClick={onRetry}
           className="
             bg-ivory text-pink-dark
-            font-serif font-bold text-[20px]
+            font-corbert text-[20px]
             px-8 py-3.5 rounded-[14px]
             hover:opacity-90 active:scale-[0.97]
             transition-all duration-150
@@ -138,7 +145,7 @@ export default function Result({ quest, onRetry }: ResultProps) {
           disabled={isSharing}
           className="
             bg-gold text-white
-            font-serif font-bold text-[20px]
+            font-corbert text-[20px]
             px-8 py-3.5 rounded-[14px]
             hover:opacity-90 active:scale-[0.97]
             transition-all duration-150 shadow-card

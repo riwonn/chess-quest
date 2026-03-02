@@ -13,10 +13,20 @@ interface CardProps {
   title?: string;
   mission?: string;
   starter?: string;
+  iconSeed?: number;
 }
 
-// ── Background colors ─────────────────────────────────────────
+// ── Background gradients (top → bottom) ───────────────────────
 const BG: Record<CardVariant, string> = {
+  "1": "linear-gradient(to bottom, #9B1560, #6B0440)",
+  "2": "linear-gradient(to bottom, #fde8fc, #FCACF3)",
+  "3": "linear-gradient(to bottom, #ffffff, #F5F1EA)",
+  "4": "linear-gradient(to bottom, #3D8F8C, #2F6F6D)",
+  "5": "linear-gradient(to bottom, #C9A870, #B08D57)",
+};
+
+// ── Solid fallback (used for canvas share) ────────────────────
+const BG_SOLID: Record<CardVariant, string> = {
   "1": "#6B0440",
   "2": "#FCACF3",
   "3": "#F5F1EA",
@@ -26,11 +36,11 @@ const BG: Record<CardVariant, string> = {
 
 // ── Text colors (primary / muted) ─────────────────────────────
 const TEXT: Record<CardVariant, { primary: string; muted: string; logo: string }> = {
-  "1": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
-  "2": { primary: "#2a0d29",  muted: "rgba(42,13,41,0.65)",   logo: "#2a0d29" },
-  "3": { primary: "#7a5c2e",  muted: "rgba(122,92,46,0.75)",  logo: "#7a5c2e" },
-  "4": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
-  "5": { primary: "#ffffff",  muted: "rgba(255,255,255,0.75)", logo: "#ffffff" },
+  "1": { primary: "#FCACF3",  muted: "rgba(255,255,255,0.75)", logo: "#FCACF3" },
+  "2": { primary: "#6C0A41",  muted: "rgba(42,13,41,0.65)",   logo: "#6C0A41" },
+  "3": { primary: "#B18E5B",  muted: "rgba(122,92,46,0.75)",  logo: "#B18E5B" },
+  "4": { primary: "#F3EEE8",  muted: "rgba(255,255,255,0.75)", logo: "#F3EEE8" },
+  "5": { primary: "#F3EEE8",  muted: "rgba(255,255,255,0.75)", logo: "#F3EEE8" },
 };
 
 // ── Border separator color (used on card back footer) ─────────
@@ -51,8 +61,65 @@ const MANDALA: Record<CardVariant, string> = {
   "5": "/images/mandala-5.png",
 };
 
+// ── Quest icons (chess + social themed) ──────────────────────
+function QuestIcon({ index, color, size = 40 }: { index: number; color: string; size?: number }) {
+  const icons = [
+    // 0: Pawn
+    <svg key={0} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="12" r="7" fill={color} />
+      <path d="M13 34h14l-2-10H15L13 34z" fill={color} />
+      <rect x="11" y="32" width="18" height="3" rx="1.5" fill={color} />
+    </svg>,
+    // 1: Bishop (mitre shape)
+    <svg key={1} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <ellipse cx="20" cy="30" rx="9" ry="4" fill={color} />
+      <path d="M20 4 C14 10 12 18 14 26h12c2-8 0-16-6-22z" fill={color} />
+      <circle cx="20" cy="11" r="2.5" fill={color} opacity="0.4" />
+    </svg>,
+    // 2: Rook / Castle
+    <svg key={2} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <rect x="10" y="18" width="20" height="16" rx="2" fill={color} />
+      <rect x="10" y="10" width="4" height="10" rx="1" fill={color} />
+      <rect x="18" y="10" width="4" height="10" rx="1" fill={color} />
+      <rect x="26" y="10" width="4" height="10" rx="1" fill={color} />
+      <rect x="10" y="32" width="20" height="3" rx="1.5" fill={color} />
+    </svg>,
+    // 3: Queen (crown)
+    <svg key={3} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <path d="M8 28h24l-4-16-6 8-2-10-2 10-6-8-4 16z" fill={color} />
+      <rect x="8" y="28" width="24" height="4" rx="2" fill={color} />
+      <circle cx="8" cy="14" r="2.5" fill={color} />
+      <circle cx="20" cy="10" r="2.5" fill={color} />
+      <circle cx="32" cy="14" r="2.5" fill={color} />
+    </svg>,
+    // 4: King (cross)
+    <svg key={4} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <rect x="18" y="4" width="4" height="12" rx="2" fill={color} />
+      <rect x="14" y="7" width="12" height="4" rx="2" fill={color} />
+      <path d="M12 18h16l3 14H9L12 18z" fill={color} />
+      <rect x="9" y="30" width="22" height="4" rx="2" fill={color} />
+    </svg>,
+    // 5: Speech bubble
+    <svg key={5} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <path d="M6 8a4 4 0 014-4h20a4 4 0 014 4v16a4 4 0 01-4 4H16l-8 6V28a4 4 0 01-2-3.46V8z" fill={color} />
+    </svg>,
+    // 6: Star (6-point)
+    <svg key={6} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <polygon points="20,4 24,16 36,16 26,24 30,36 20,28 10,36 14,24 4,16 16,16" fill={color} />
+    </svg>,
+    // 7: Handshake / Two hands
+    <svg key={7} width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <path d="M4 20c0 0 6-8 10-8h4l8 8-4 2-4-4H16" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+      <path d="M36 20c0 0-6-8-10-8h-2" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+      <path d="M14 20l2 2 4-2 4 4" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+      <path d="M8 28l8-8M16 28l8-8M24 28l4-4" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
+    </svg>,
+  ];
+  return icons[index % icons.length];
+}
+
 // ── Knight SVG (recolored per variant) ───────────────────────
-function KnightIcon({ color, size = 22 }: { color: string; size?: number }) {
+function KnightIcon({ color, size = 27 }: { color: string; size?: number }) {
   const scale = size / 31;
   return (
     <svg
@@ -80,8 +147,11 @@ export default function Card({
   title,
   mission,
   starter,
+  iconSeed = 0,
 }: CardProps) {
   const bg      = BG[variant];
+  const _bgSolid = BG_SOLID[variant]; // reserved for canvas share
+  void _bgSolid;
   const text    = TEXT[variant];
   const border  = BORDER_COLOR[variant];
   const mandala: string = MANDALA[variant];
@@ -96,7 +166,7 @@ export default function Card({
         width: W,
         height: H,
         borderRadius: 28,
-        backgroundColor: bg,
+        background: bg,
         flexShrink: 0,
       }}
     >
@@ -114,8 +184,8 @@ export default function Card({
           />
 
           {/* Knight icon — top center */}
-          <div className="absolute top-7 left-0 right-0 flex justify-center" style={{ zIndex: 1 }}>
-            <KnightIcon color={text.primary} size={26} />
+          <div className="absolute left-0 right-0 flex justify-center" style={{ zIndex: 1, top: "100px" }}>
+            <KnightIcon color={text.primary} size={31} />
           </div>
 
           {/* Mandala illustration — center */}
@@ -123,8 +193,8 @@ export default function Card({
             <Image
               src={mandala}
               alt="card illustration"
-              width={180}
-              height={180}
+              width={126}
+              height={126}
               style={{ objectFit: "contain" }}
               priority
             />
@@ -135,11 +205,13 @@ export default function Card({
       {/* ── BACK ──────────────────────────────────────────────── */}
       {page === "Back" && (
         <div className="h-full flex flex-col">
-          {/* Upper empty area */}
-          <div className="flex-1" />
+          {/* Icon — upper center */}
+          <div className="flex-1 flex items-center justify-center">
+            <QuestIcon index={iconSeed} color={text.primary} size={48} />
+          </div>
 
           {/* Text block — bottom portion */}
-          <div className="px-6 pb-5">
+          <div className="px-6 pb-5 text-center">
             <h3
               className="font-corbert text-[26px] leading-tight mb-1"
               style={{ color: text.primary }}
@@ -147,7 +219,7 @@ export default function Card({
               {title ?? "Quest Title"}
             </h3>
             <p
-              className="font-sans text-[15px] leading-snug"
+              className="font-sans text-[14px] leading-relaxed"
               style={{ color: text.muted }}
             >
               {mission ?? "Quest Description"}
@@ -156,7 +228,7 @@ export default function Card({
             {/* Starter (if provided) */}
             {starter && (
               <p
-                className="font-serif text-[13px] italic mt-3 leading-snug"
+                className="font-serif text-[13px] italic mt-3 leading-relaxed"
                 style={{ color: text.muted }}
               >
                 {starter}
@@ -164,9 +236,9 @@ export default function Card({
             )}
           </div>
 
-          {/* Footer — Seoul Chess Club + logo */}
+          {/* Footer — Seoul Chess Club */}
           <div
-            className="px-6 py-4 flex items-center gap-2"
+            className="px-6 py-4 flex justify-center"
             style={{ borderTop: `1px solid ${border}` }}
           >
             <span
@@ -175,7 +247,6 @@ export default function Card({
             >
               Seoul Chess Club
             </span>
-            <KnightIcon color={text.logo} size={18} />
           </div>
         </div>
       )}
