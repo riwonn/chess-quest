@@ -3,48 +3,59 @@
 import { useState } from "react";
 import Card from "./Card";
 
+// Card size
+const W = 280;
+const H = 420;
+
+// Container size — enough room for the spread
+const CW = 560;
+const CH = 500;
+
+// Each card starts at the center of the container
+const centerLeft = (CW - W) / 2; // 140px
+const centerTop  = (CH - H) / 2; // 40px
+
 export default function CardFan() {
   const [spread, setSpread] = useState(false);
   const [tooltipHovered, setTooltipHovered] = useState(false);
 
-  // ── Resting transforms ───────────────────────────────────────
-  // Cards overlap naturally like a hand of cards
-  const restLeft   = "rotate(-18deg) translate(-20px, 20px)";
-  const restCenter = "rotate(0deg)   translate(0px, 0px)";
-  const restRight  = "rotate(14deg)  translate(20px, 20px)";
+  // ── Resting: cards close together, overlapping like a hand ──
+  // transform-origin defaults to 50% 50% (center of element)
+  const rest = {
+    left:   { transform: "rotate(-18deg) translateX(-80px) translateY(16px)" },
+    center: { transform: "rotate(0deg)" },
+    right:  { transform: "rotate(14deg)  translateX(70px)  translateY(16px)" },
+  };
 
-  // ── Spread transforms (on hover) ────────────────────────────
-  const spreadLeft   = "rotate(-24deg) translate(-60px, 28px)";
-  const spreadCenter = "rotate(0deg)   translate(0px, -16px)";
-  const spreadRight  = "rotate(20deg)  translate(60px, 28px)";
+  // ── Spread: fan out wider when hovered ──────────────────────
+  const fanned = {
+    left:   { transform: "rotate(-24deg) translateX(-110px) translateY(24px)" },
+    center: { transform: "rotate(0deg)   translateY(-14px)" },
+    right:  { transform: "rotate(20deg)  translateX(100px)  translateY(24px)" },
+  };
 
-  const TRANSITION = "transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]";
+  const pos  = spread ? fanned : rest;
+  const ease = "transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]";
 
   return (
     <div
-      className="relative flex items-center justify-center cursor-default"
-      style={{ width: 520, height: 460 }}
+      className="relative cursor-default"
+      style={{ width: CW, height: CH }}
       onMouseEnter={() => setSpread(true)}
       onMouseLeave={() => { setSpread(false); setTooltipHovered(false); }}
     >
-      {/* ── Left card: variant 1 (dark maroon) ───────────────── */}
+      {/* ── Left: variant 1 (dark maroon) ─────────────────────── */}
       <div
-        className={`absolute ${TRANSITION}`}
-        style={{
-          transform: spread ? spreadLeft : restLeft,
-          zIndex: 10,
-        }}
+        className={`absolute ${ease}`}
+        style={{ top: centerTop, left: centerLeft, zIndex: 10, ...pos.left }}
       >
         <Card variant="1" page="Front" />
       </div>
 
-      {/* ── Center card: variant 2 (pink) ────────────────────── */}
+      {/* ── Center: variant 2 (pink) ───────────────────────────── */}
       <div
-        className={`absolute ${TRANSITION}`}
-        style={{
-          transform: spread ? spreadCenter : restCenter,
-          zIndex: 20,
-        }}
+        className={`absolute ${ease}`}
+        style={{ top: centerTop, left: centerLeft, zIndex: 20, ...pos.center }}
         onMouseEnter={() => setTooltipHovered(true)}
         onMouseLeave={() => setTooltipHovered(false)}
       >
@@ -70,18 +81,15 @@ export default function CardFan() {
         )}
       </div>
 
-      {/* ── Right card: variant 3 (ivory) ────────────────────── */}
+      {/* ── Right: variant 3 (ivory) ───────────────────────────── */}
       <div
-        className={`absolute ${TRANSITION}`}
-        style={{
-          transform: spread ? spreadRight : restRight,
-          zIndex: 15,
-        }}
+        className={`absolute ${ease}`}
+        style={{ top: centerTop, left: centerLeft, zIndex: 15, ...pos.right }}
       >
         <Card variant="3" page="Front" />
       </div>
 
-      {/* Bottom gradient fade */}
+      {/* Bottom gradient */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[140px] pointer-events-none"
         style={{ background: "linear-gradient(to bottom, transparent, #1e2430)" }}
