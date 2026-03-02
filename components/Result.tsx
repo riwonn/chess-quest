@@ -113,7 +113,7 @@ export default function Result({ quest, onRetry }: ResultProps) {
       </div>
 
       {/* ── Buttons — fixed at bottom ─────────────────────────── */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 z-10">
+      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 z-10">
 
         {/* Retry */}
         <button

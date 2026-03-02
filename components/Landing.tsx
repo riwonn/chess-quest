@@ -35,7 +35,7 @@ export default function Landing({ onDraw }: LandingProps) {
       </div>
 
       {/* ── CTA button — fixed at bottom ──────────────────────── */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-10">
+      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-10">
         <button
           onClick={onDraw}
           className="
