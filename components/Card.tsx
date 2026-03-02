@@ -237,10 +237,7 @@ export default function Card({
           </div>
 
           {/* Footer — Seoul Chess Club */}
-          <div
-            className="px-6 py-4 flex justify-center"
-            style={{ borderTop: `1px solid ${border}` }}
-          >
+          <div className="px-6 py-4 flex justify-center">
             <span
               className="font-serif text-[13px]"
               style={{ color: text.muted }}

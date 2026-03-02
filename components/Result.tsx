@@ -95,6 +95,7 @@ function FlipCard({ quest, lang }: { quest: Quest; lang: Lang }) {
 
         {/* ── BACK face (quest content) ────────────────────────── */}
         <div
+          id="card-back-face"
           style={{
             position: "absolute",
             inset: 0,

@@ -1,7 +1,7 @@
 "use client";
 
 // Repeats enough times to fill any screen width seamlessly
-const ITEM = "Seoul Chess Club, where curious minds meet";
+const ITEM = "Seoul Chess Club where curious minds meet";
 const SEPARATOR = "\u00A0\u00A0\u00A0•\u00A0\u00A0\u00A0";
 const REPEATED = Array(12).fill(ITEM).join(SEPARATOR) + SEPARATOR;
 
@@ -16,7 +16,7 @@ export default function TickerFooter() {
         style={{
           display: "inline-flex",
           whiteSpace: "nowrap",
-          animation: "marquee 45s linear infinite",
+          animation: "marquee 120s linear infinite",
         }}
       >
         {/* Two identical spans so the loop is seamless (translateX -50%) */}
