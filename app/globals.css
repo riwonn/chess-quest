@@ -88,6 +88,12 @@ body::before {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
+/* ─── Ticker / marquee ───────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* ─── Shuffle keyframes ──────────────────────────────────────── */
 @keyframes shuffle-a {
   0%   { transform: rotate(0deg)   translate(0px,    0px); }

@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Card from "./Card";
+import TickerFooter from "./TickerFooter";
 import type { CardVariant } from "./Card";
+import type { Lang } from "@/app/page";
 
 interface ShuffleProps {
   onComplete: () => void;
+  lang: Lang;
+  onLangToggle: () => void;
 }
 
 const W = 280;
@@ -19,7 +23,20 @@ const CARDS: { variant: CardVariant; anim: string; delay: string; z: number }[] 
   { variant: "2", anim: "shuffle-e", delay: "240ms", z: 15 },
 ];
 
-export default function Shuffle({ onComplete }: ShuffleProps) {
+function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
+  return (
+    <button
+      onClick={onToggle}
+      className="flex items-center gap-1 font-sans text-[13px] tracking-wide hover:opacity-80 transition-opacity"
+    >
+      <span style={{ color: lang === "en" ? "#fcacf3" : "rgba(255,255,255,0.35)" }}>EN</span>
+      <span className="text-white/20">|</span>
+      <span style={{ color: lang === "kr" ? "#fcacf3" : "rgba(255,255,255,0.35)" }}>KR</span>
+    </button>
+  );
+}
+
+export default function Shuffle({ onComplete, lang, onLangToggle }: ShuffleProps) {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
@@ -34,16 +51,19 @@ export default function Shuffle({ onComplete }: ShuffleProps) {
       style={{ opacity: fading ? 0 : 1 }}
     >
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 flex flex-col items-center justify-end px-2 py-8 h-[160px]">
-        <p className="font-corbert text-[28px] text-pink leading-none tracking-tight">
+      <div className="absolute top-0 left-0 right-0 h-[160px]">
+        <p className="absolute bottom-5 left-1/2 -translate-x-1/2 font-corbert text-[28px] text-pink leading-none tracking-tight whitespace-nowrap">
           Seoul Chess Club Quest
         </p>
+        <div className="absolute bottom-5 right-6">
+          <LangToggle lang={lang} onToggle={onLangToggle} />
+        </div>
       </div>
 
       {/* Status text */}
       <div className="absolute top-[190px] left-1/2 -translate-x-1/2 z-20 whitespace-nowrap">
         <p className="font-sans text-[22px] text-white/80 text-center tracking-wide">
-          Shuffling the cards…
+          {lang === "en" ? "Shuffling the cards…" : "카드를 섞는 중…"}
         </p>
       </div>
 
@@ -75,9 +95,11 @@ export default function Shuffle({ onComplete }: ShuffleProps) {
 
       {/* Bottom gradient */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[200px] pointer-events-none z-0"
+        className="absolute bottom-[40px] left-0 right-0 h-[200px] pointer-events-none z-0"
         style={{ background: "linear-gradient(to bottom, transparent, #1e2430)" }}
       />
+
+      <TickerFooter />
     </div>
   );
 }
